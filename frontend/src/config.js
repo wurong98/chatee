@@ -71,7 +71,10 @@ const config = getCurrentConfig();
 
 export const SERVER_HOST = config.host;
 export const SERVER_PORT = config.port;
-export const SERVER_URL = `http://${SERVER_HOST}:${SERVER_PORT}`;
+// 生产环境使用HTTPS，开发环境使用HTTP
+export const SERVER_URL = process.env.NODE_ENV === 'production'
+  ? `https://${SERVER_HOST}:${SERVER_PORT}`
+  : `http://${SERVER_HOST}:${SERVER_PORT}`;
 export const SIGNAL_SERVER_URL = process.env.REACT_APP_SIGNAL_SERVER || SERVER_URL;
 
 export default {
