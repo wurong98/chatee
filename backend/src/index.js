@@ -8,7 +8,10 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || 'https://chat.bit64.site',
   'https://chat.bit64.site',
   'http://localhost:3000',
-  'http://43.155.147.156:3000'
+  'http://localhost:3001',
+  'http://43.155.147.156:3000',
+  'http://43.155.147.156:3001',
+  'http://43.155.147.156'
 ];
 
 const corsOptions = {
