@@ -164,6 +164,20 @@ io.on('connection', (socket) => {
   });
 
   /**
+   * 转发文本消息 (加密传输)
+   */
+  socket.on('text-message', (data) => {
+    const { roomId, message } = data;
+    const room = rooms.get(roomId);
+    if (!room) return;
+
+    // 转发给对方
+    const targetId = room.caller === socket.id ? room.callee : room.caller;
+    io.to(targetId).emit('text-message', { message, from: socket.id });
+    console.log(`[WS] 转发文本: ${socket.id} -> ${targetId}`);
+  });
+
+  /**
    * 挂断通话
    */
   socket.on('hangup', (data) => {
@@ -196,6 +210,7 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-httpServer.listen(PORT, () => {
-  console.log(`[Server] 信令服务器启动在 http://localhost:${PORT}`);
+const HOST = process.env.HOST || '0.0.0.0';
+httpServer.listen(PORT, HOST, () => {
+  console.log(`[Server] 信令服务器启动在 http://0.0.0.0:${PORT}`);
 });
