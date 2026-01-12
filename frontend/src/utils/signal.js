@@ -1,10 +1,9 @@
 import io from 'socket.io-client';
-
-const SOCKET_URL = process.env.REACT_APP_SIGNAL_SERVER || 'http://localhost:3001';
+import { SIGNAL_SERVER_URL } from '../config';
 
 export class SignalClient {
   constructor(onOffer, onAnswer, onIceCandidate, onCalleeJoined, onHangup, onPeerDisconnected) {
-    this.socket = io(SOCKET_URL);
+    this.socket = io(SIGNAL_SERVER_URL);
     this.roomId = null;
     this.seed = null;
 

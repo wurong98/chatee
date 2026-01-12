@@ -3,6 +3,7 @@ import './App.css';
 import StartCall from './components/StartCall';
 import JoinCall from './components/JoinCall';
 import CallScreen from './components/CallScreen';
+import ServerConfig from './components/ServerConfig';
 
 function App() {
   const [page, setPage] = useState('start'); // 'start', 'join', 'call'
@@ -35,6 +36,7 @@ function App() {
         <JoinCall onJoinCall={handleJoinCall} onGoToStart={() => setPage('start')} />
       )}
       {page === 'call' && <CallScreen callData={callData} onCallEnd={handleCallEnd} />}
+      <ServerConfig />
     </div>
   );
 }
