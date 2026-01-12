@@ -6,36 +6,33 @@ const { v4: uuidv4 } = require('uuid');
 
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'https://chat.bit64.site',
+  'https://chat.bit64.site',
+  'http://localhost:3000',
+  'http://43.155.147.156:3000'
 ];
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
-
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (same-origin requests, mobile apps, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.warn(`[CORS] Request from origin: ${origin}`);
+      callback(null, false);
     }
   },
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
   optionsSuccessStatus: 200
-}));
+};
+
+const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: corsOptions
+});
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Store active connections: roomId -> { caller, callee }
