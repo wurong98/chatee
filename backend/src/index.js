@@ -4,18 +4,34 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'https://chat.bit64.site',
+];
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://43.155.147.156:3000',
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST'],
     credentials: true
   }
 });
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://43.155.147.156:3000',
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
   optionsSuccessStatus: 200
