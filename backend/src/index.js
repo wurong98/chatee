@@ -8,12 +8,18 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || '43.155.147.156',
-    methods: ['GET', 'POST']
+    origin: process.env.FRONTEND_URL || 'http://43.155.147.156:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://43.155.147.156:3000',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 app.use(express.json());
 
 // Store active connections: roomId -> { caller, callee }
