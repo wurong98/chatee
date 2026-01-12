@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { deriveKeyFromSeed } from '../utils/crypto';
+import { SERVER_URL } from '../config';
 
 function StartCall({ onStartCall, onGoToJoin }) {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ function StartCall({ onStartCall, onGoToJoin }) {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/call/generate', {
+      const response = await fetch(`${SERVER_URL}/api/call/generate`, {
         method: 'POST'
       });
 
