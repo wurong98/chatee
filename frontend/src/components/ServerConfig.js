@@ -44,6 +44,8 @@ function ServerConfig({ onConfigSaved }) {
     setIsEditing(false);
   };
 
+  const protocol = useHttps ? 'https' : 'http';
+
   return (
     <div className="server-config">
       <div className="config-header">
@@ -89,7 +91,7 @@ function ServerConfig({ onConfigSaved }) {
 
           <div className="config-preview">
             <span className="label">预览:</span>
-            <span className="value">http://{host}:{port}</span>
+            <span className="value">https://{host}:{port}</span>
           </div>
 
           {message && (

@@ -1,5 +1,8 @@
 const express = require('express');
 const { createServer } = require('http');
+const { createSecureServer } = require('http2');
+const fs = require('fs');
+const path = require('path');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
@@ -7,11 +10,6 @@ const { v4: uuidv4 } = require('uuid');
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'https://chat.bit64.site',
   'https://chat.bit64.site',
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://43.155.147.156:3000',
-  'http://43.155.147.156:3001',
-  'http://43.155.147.156'
 ];
 
 const corsOptions = {
@@ -30,7 +28,15 @@ const corsOptions = {
 };
 
 const app = express();
-const httpServer = createServer(app);
+const certPath = process.env.CERT_PATH || '/etc/ssl/certs/cert.pem';
+const keyPath = process.env.KEY_PATH || '/etc/ssl/private/key.pem';
+
+const https = require('https');
+const cert = fs.readFileSync(certPath);
+const key = fs.readFileSync(keyPath);
+const httpServer = https.createServer({ cert, key }, app);
+console.log('[Server] 使用HTTPS');
+
 const io = new Server(httpServer, {
   cors: corsOptions
 });
@@ -215,5 +221,5 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.HOST || '0.0.0.0';
 httpServer.listen(PORT, HOST, () => {
-  console.log(`[Server] 信令服务器启动在 http://0.0.0.0:${PORT}`);
+  console.log(`[Server] 信令服务器启动在 https://${HOST}:${PORT}`);
 });
