@@ -3,7 +3,7 @@
  * 服务器地址和端口设置
  */
 
-const DEFAULT_HOST = 'localhost';
+const DEFAULT_HOST = '43.155.147.156';
 const DEFAULT_PORT = 3001;
 const STORAGE_KEY = 'server_config';
 
