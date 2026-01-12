@@ -14,11 +14,19 @@ const chalk = require('chalk');
 
 // 解析命令行参数
 const args = process.argv.slice(2);
+let host = 'localhost';
 let port = 3001;
+let url = null;
 let help = false;
 
 for (let i = 0; i < args.length; i++) {
-  if (args[i] === '--port' && args[i + 1]) {
+  if (args[i] === '--url' && args[i + 1]) {
+    url = args[i + 1];
+    i++;
+  } else if (args[i] === '--host' && args[i + 1]) {
+    host = args[i + 1];
+    i++;
+  } else if (args[i] === '--port' && args[i + 1]) {
     port = parseInt(args[i + 1]);
     i++;
   } else if (args[i] === '--help') {
@@ -32,9 +40,31 @@ CLI 通话测试工具
 ===============
 
 用法:
-  npm run test:cli                    测试默认端口 3001
-  npm run test:cli -- --port 3002     测试指定端口
-  npm run test:cli -- --help          显示帮助信息
+  npm run test:cli                                    # 使用默认设置 (localhost:3001)
+  npm run test:cli -- --port 3002                    # 指定端口
+  npm run test:cli -- --host 192.168.1.100           # 指定主机
+  npm run test:cli -- --host 192.168.1.100 --port 3002  # 指定主机和端口
+  npm run test:cli -- --url http://example.com:3001  # 指定完整 URL
+  npm run test:cli -- --help                         # 显示帮助信息
+
+参数说明:
+  --url <url>           完整的服务器 URL (例: http://192.168.1.100:3001)
+  --host <host>         服务器主机地址 (默认: localhost)
+  --port <port>         服务器端口 (默认: 3001)
+  --help                显示帮助信息
+
+优先级: --url > (--host + --port)
+如果指定了 --url，--host 和 --port 会被忽略
+
+示例:
+  # 本地测试
+  npm run test:cli
+
+  # 测试远程服务器
+  npm run test:cli -- --url http://example.com:3001
+
+  # 测试局域网地址
+  npm run test:cli -- --host 192.168.1.100 --port 3001
 
 此工具模拟完整的通话流程:
   1. 调用 API 生成新链接
@@ -54,7 +84,7 @@ CLI 通话测试工具
   process.exit(0);
 }
 
-const SERVER_URL = `http://localhost:${port}`;
+const SERVER_URL = url || `http://${host}:${port}`;
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
 

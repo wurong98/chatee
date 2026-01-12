@@ -30,8 +30,13 @@ function JoinCall({ onJoinCall, onGoToStart }) {
       }
 
       // 推导共享密钥
-      const sharedKey = deriveKeyFromSeed(s);
-      console.log('[JoinCall] 已推导共享密钥');
+      try {
+        const sharedKey = deriveKeyFromSeed(s);
+        console.log('[JoinCall] 已推导共享密钥');
+      } catch (keyError) {
+        console.error('[JoinCall] 密钥推导错误:', keyError);
+        throw new Error('密钥推导失败: ' + keyError.message);
+      }
 
       onJoinCall({
         roomId: id,

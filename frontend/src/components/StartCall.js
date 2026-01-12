@@ -24,8 +24,13 @@ function StartCall({ onStartCall, onGoToJoin }) {
       const { roomId, seed, link: fullLink } = data;
 
       // 推导共享密钥（验证）
-      const sharedKey = deriveKeyFromSeed(seed);
-      console.log('[StartCall] 已生成共享密钥');
+      try {
+        const sharedKey = deriveKeyFromSeed(seed);
+        console.log('[StartCall] 已生成共享密钥');
+      } catch (keyError) {
+        console.error('[StartCall] 密钥推导错误:', keyError);
+        throw new Error('密钥推导失败: ' + keyError.message);
+      }
 
       setLink(fullLink);
       onStartCall({

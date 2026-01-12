@@ -7,14 +7,28 @@ import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
  */
 export function deriveKeyFromSeed(seed) {
   try {
+    // 将URL-safe Base64种子转换为标准Base64
+    let base64Seed = seed.replace(/-/g, '+').replace(/_/g, '/');
+    
+    // 添加padding
+    while (base64Seed.length % 4) {
+      base64Seed += '=';
+    }
+    
     // 将Base64种子解码为字节
-    const seedBytes = decodeBase64(seed);
+    const seedBytes = decodeBase64(base64Seed);
+    
+    // 验证解码结果
+    if (!seedBytes || seedBytes.length === 0) {
+      throw new Error('种子解码失败');
+    }
     
     // 使用SHA512(种子)生成32字节密钥
     // 注: TweetNaCl没有内置的KDF，这里使用secretbox的密钥推导方案
     const hash = nacl.hash(seedBytes);
     const key = hash.slice(0, 32); // 取前32字节作为加密密钥
     
+    console.log('[crypto] 密钥推导成功');
     return key;
   } catch (e) {
     console.error('密钥推导失败:', e);

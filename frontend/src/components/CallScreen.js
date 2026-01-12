@@ -28,9 +28,14 @@ function CallScreen({ callData, onCallEnd }) {
       setStatus('initializing');
 
       // 推导共享密钥
-      const key = deriveKeyFromSeed(callData.seed);
-      sharedKeyRef.current = key;
-      console.log('[CallScreen] 密钥已推导');
+      try {
+        const key = deriveKeyFromSeed(callData.seed);
+        sharedKeyRef.current = key;
+        console.log('[CallScreen] 密钥已推导');
+      } catch (keyError) {
+        console.error('[CallScreen] 密钥推导错误:', keyError);
+        throw new Error('密钥推导失败: ' + keyError.message);
+      }
 
       // 初始化 WebRTC
       const webrtcManager = new WebRTCManager(
