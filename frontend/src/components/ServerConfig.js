@@ -44,8 +44,6 @@ function ServerConfig({ onConfigSaved }) {
     setIsEditing(false);
   };
 
-  const protocol = useHttps ? 'https' : 'http';
-
   return (
     <div className="server-config">
       <div className="config-header">
