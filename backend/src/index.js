@@ -61,10 +61,12 @@ function generateLink() {
   }
   const seed = seedBytes.toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
   
+  const frontendUrl = process.env.FRONTEND_URL || 'https://chat.bit64.site';
+  
   return {
     roomId,
     seed,
-    link: `http://localhost:3000/join?roomId=${roomId}&seed=${seed}`
+    link: `${frontendUrl}/join?roomId=${roomId}&seed=${seed}`
   };
 }
 
